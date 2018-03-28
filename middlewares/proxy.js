@@ -1,5 +1,5 @@
 var urllib  = require('url');
-var request = require('request');
+var request = require('request');//一个http请求的客户端
 var logger = require('../common/logger')
 var _ = require('lodash')
 
@@ -12,11 +12,11 @@ exports.proxy = function (req, res, next) {
   var url = decodeURIComponent(req.query.url);
   var hostname = urllib.parse(url).hostname;
 
-  if (ALLOW_HOSTNAME.indexOf(hostname) === -1) {
+  if (ALLOW_HOSTNAME.indexOf(hostname) === -1) {//如果域名不包含就返回
     return res.send(hostname + ' is not allowed');
   }
 
-  request.get({
+  request.get({//get请求
       url: url,
       headers: _.omit(req.headers, ['cookie', 'refer']),
     })
@@ -26,5 +26,5 @@ exports.proxy = function (req, res, next) {
     .on('error', function (err) {
       logger.error(err);
     })
-    .pipe(res);
+    .pipe(res);//注入到res
 };

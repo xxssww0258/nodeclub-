@@ -1,5 +1,5 @@
 var logger = require('../common/logger');
-
+// 这是一个请求时间的
 var ignore = /^\/(public|agent)/;
 
 exports = module.exports = function (req, res, next) {

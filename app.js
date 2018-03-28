@@ -12,35 +12,35 @@ if (!config.debug && config.oneapm_key) {
   require('oneapm');
 }
 
-require('colors');
-var path = require('path');
-var Loader = require('loader');
-var LoaderConnect = require('loader-connect')
-var express = require('express');
-var session = require('express-session');
-var passport = require('passport');
+require('colors');//colors.js  控制颜色打印的模块
+var path = require('path');//路径模块
+var Loader = require('loader');//静态资源加载器
+var LoaderConnect = require('loader-connect')//目前支持.less、.styl编译为CSS文件。.coffee、.es编译为普通的JavaScript文件
+var express = require('express');//著名的express框架
+var session = require('express-session');//express-session 配合 passport的
+var passport = require('passport');//第三方认证  或 本地认证的
 require('./middlewares/mongoose_log'); // 打印 mongodb 查询日志
-require('./models');
-var GitHubStrategy = require('passport-github').Strategy;
+require('./models');//表模块
+var GitHubStrategy = require('passport-github').Strategy;//配合passport
 var githubStrategyMiddleware = require('./middlewares/github_strategy');
-var webRouter = require('./web_router');
-var apiRouterV1 = require('./api_router_v1');
+var webRouter = require('./web_router');//页面路由
+var apiRouterV1 = require('./api_router_v1');//api路由
 var auth = require('./middlewares/auth');
-var errorPageMiddleware = require('./middlewares/error_page');
+var errorPageMiddleware = require('./middlewares/error_page');//渲染404错误页 和 err错误页
 var proxyMiddleware = require('./middlewares/proxy');
 var RedisStore = require('connect-redis')(session);
 var _ = require('lodash');
 var csurf = require('csurf');
-var compress = require('compression');
-var bodyParser = require('body-parser');
+var compress = require('compression');//压缩插件
+var bodyParser = require('body-parser');//post请求的必备东西
 var busboy = require('connect-busboy');
 var errorhandler = require('errorhandler');
 var cors = require('cors');
-var requestLog = require('./middlewares/request_log');
-var renderMiddleware = require('./middlewares/render');
-var logger = require('./common/logger');
-var helmet = require('helmet');
-var bytes = require('bytes')
+var requestLog = require('./middlewares/request_log');//引入请求的时间的自定义中间件
+var renderMiddleware = require('./middlewares/render');//引入渲染时间的自定义插件
+var logger = require('./common/logger');//引入打印中间件
+var helmet = require('helmet');//安全性相关的HTTP头的插件
+var bytes = require('bytes')//一个把给定的数字转换成kb mb gb tb等字符串的模块
 
 
 // 静态文件目录
@@ -57,17 +57,17 @@ if (config.mini_assets) {
   }
 }
 
-var urlinfo = require('url').parse(config.host);
-config.hostname = urlinfo.hostname || config.host;
+var urlinfo = require('url').parse(config.host);//得到一个url对象
+config.hostname = urlinfo.hostname || config.host;//www.baidu.com
 
-var app = express();
+var app = express();//启动express服务
 
 // configuration in all env
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'html');
-app.engine('html', require('ejs-mate'));
-app.locals._layoutFile = 'layout.html';
-app.enable('trust proxy');
+app.set('views', path.join(__dirname, 'views'));//模板文件路径
+app.set('view engine', 'html');//html
+app.engine('html', require('ejs-mate'));//html用ejs编译
+app.locals._layoutFile = 'layout.html';//挂载一个全局字符串
+app.enable('trust proxy');//启用信任代理 X-Forwarded-*
 
 // Request logger。请求时间
 app.use(requestLog);
@@ -81,7 +81,7 @@ if (config.debug) {
 if (config.debug) {
   app.use(LoaderConnect.less(__dirname)); // 测试环境用，编译 .less on the fly
 }
-app.use('/public', express.static(staticDir));
+app.use('/public', express.static(staticDir));//暴露静态目录
 app.use('/agent', proxyMiddleware.proxy);
 
 // 通用的中间件

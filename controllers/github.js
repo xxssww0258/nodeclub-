@@ -1,5 +1,5 @@
 var Models         = require('../models');
-var User           = Models.User;
+var User           = Models.User;//这是一张user表
 var authMiddleWare = require('../middlewares/auth');
 var tools          = require('../common/tools');
 var eventproxy     = require('eventproxy');
