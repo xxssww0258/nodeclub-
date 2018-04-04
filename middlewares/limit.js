@@ -1,6 +1,6 @@
 var config = require('../config');
 var cache  = require('../common/cache');
-var moment = require('moment');
+var moment = require('moment');//日期插件
 
 var SEPARATOR = '^_^@T_T';
 

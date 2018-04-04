@@ -30,12 +30,12 @@ var errorPageMiddleware = require('./middlewares/error_page');//渲染404错误�
 var proxyMiddleware = require('./middlewares/proxy');
 var RedisStore = require('connect-redis')(session);
 var _ = require('lodash');
-var csurf = require('csurf');
+var csurf = require('csurf');//使用csurf来阻止CSRF攻击 这个东西好像只能用在node的渲染引擎上
 var compress = require('compression');//压缩插件
 var bodyParser = require('body-parser');//post请求的必备东西
-var busboy = require('connect-busboy');
-var errorhandler = require('errorhandler');
-var cors = require('cors');
+var busboy = require('connect-busboy');//文件上传的模块
+var errorhandler = require('errorhandler');//开发环境下的调试 错误报告
+var cors = require('cors');//允许跨域请求的模块
 var requestLog = require('./middlewares/request_log');//引入请求的时间的自定义中间件
 var renderMiddleware = require('./middlewares/render');//引入渲染时间的自定义插件
 var logger = require('./common/logger');//引入打印中间件
@@ -122,7 +122,7 @@ app.use(auth.blockUser());
 
 if (!config.debug) {
   app.use(function (req, res, next) {
-    if (req.path === '/api' || req.path.indexOf('/api') === -1) {
+    if (req.path === '/api' || req.path.indexOf('/api') === -1) {//所有的渲染页面使用csurf进行保护
       csurf()(req, res, next);
       return;
     }
