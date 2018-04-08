@@ -28,7 +28,7 @@ var apiRouterV1 = require('./api_router_v1');//api路由
 var auth = require('./middlewares/auth');
 var errorPageMiddleware = require('./middlewares/error_page');//渲染404错误页 和 err错误页
 var proxyMiddleware = require('./middlewares/proxy');
-var RedisStore = require('connect-redis')(session);
+var RedisStore = require('connect-redis')(session);//把session内存的东西直接存入到redis中 防止express断电丢失东西
 var _ = require('lodash');
 var csurf = require('csurf');//使用csurf来阻止CSRF攻击 这个东西好像只能用在node的渲染引擎上
 var compress = require('compression');//压缩插件
@@ -92,16 +92,16 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
 app.use(require('method-override')());
 app.use(require('cookie-parser')(config.session_secret));
 app.use(compress());
-app.use(session({
-  secret: config.session_secret,
-  store: new RedisStore({
+app.use(session({//把session存储到redis库
+  secret: config.session_secret,//秘密
+  store: new RedisStore({//链接redis库
     port: config.redis_port,
     host: config.redis_host,
     db: config.redis_db,
     pass: config.redis_password,
   }),
-  resave: false,
-  saveUninitialized: false,
+  resave: false,//不重新保存
+  saveUninitialized: false,//不保存未初始化的东西
 }));
 
 // oauth 中间件

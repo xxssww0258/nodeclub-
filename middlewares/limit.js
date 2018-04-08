@@ -11,7 +11,7 @@ var makePerDayLimiter = function (identityName, identityFn) {
     */
     return function (req, res, next) {
       var identity = identityFn(req);
-      var YYYYMMDD = moment().format('YYYYMMDD');
+      var YYYYMMDD = moment().format('YYYYMMDD');//获取当前年月日字符串
       var key      = YYYYMMDD + SEPARATOR + identityName + SEPARATOR + name + SEPARATOR + identity;
 
       cache.get(key, function (err, count) {
